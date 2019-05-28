@@ -34,6 +34,11 @@ $(document).on("click", "p", function() {
 
       // If there's a note in the article
       if (data.note) {
+        for (var i = 0; i < data.note.length; i++) {
+          $("#notes").append("<br><br>");
+          $("#notes").append("<h3>" + data.note[i].title + "</h3>");
+          $("#notes").append("<h4>" + data.note[i].body + "</h4>");
+        }
         // Place the title of the note in the title input
         $("#titleinput").val(data.note.title);
         // Place the body of the note in the body textarea
@@ -70,3 +75,13 @@ $(document).on("click", "#savenote", function() {
   $("#titleinput").val("");
   $("#bodyinput").val("");
 });
+
+// Get articles when the scrape button is clicked
+$(document).on("click", "#scrap-articles", function() {
+  $.ajax({
+    method: "GET",
+    url: "/scrape"
+  }).then(function() {
+    location.reload();
+  })
+})

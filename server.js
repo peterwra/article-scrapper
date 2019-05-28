@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/articleScraper", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/articleScraper", { useNewUrlParser: true, useFindAndModify: false });
 
 // Routes
 
@@ -96,6 +96,7 @@ app.get("/articles/:id", function (req, res) {
     .populate("note")
     .then(function (dbArticle) {
       // If any Libraries are found, send them to the client with any associated Books
+      console.log(dbArticle);
       res.json(dbArticle);
     })
     .catch(function (err) {
@@ -117,7 +118,8 @@ app.post("/articles/:id", function (req, res) {
       // If a Note was created successfully, find one User (there's only one) and push the new Note's _id to the User's `notes` array
       // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
       // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      return db.Article.findOneAndUpdate({ _id: req.params.id }, {note: dbNote._id }, { new: true });
+      // return db.Article.findOneAndUpdate({ _id: req.params.id }, {note: dbNote._id }, { new: true });
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, {$push: {note: dbNote._id }}, { new: true });
     })
     .then(function (dbArticle) {
       // If the User was updated successfully, send it back to the client
