@@ -1,13 +1,3 @@
-// Grab the articles as a json
-$.getJSON("/articles", function (data) {
-  for (var i = 0; i < data.length; i++) {
-    $("#articles").append("<hr><div class='card'><div class='card-body'><h5 class='card-title'>" + data[i].title + "</h5><p class='card-text'>" + data[i].link +
-      "</p><div class='btn-group' role='group'><button class='btn btn-primary save-article' data-id='" + data[i]._id + "'>Save This Article</button>" +
-      "<button class='btn btn-secondary notes' data-id='" + data[i]._id + "'>Add/View Notes</button>" + 
-      "<button class='btn btn-danger delete-article' data-id='" + data[i]._id + "'>Delete Article</button></div>");
-  }
-});
-
 // Save our article when the user clicks the button
 $(document).on("click", ".save-article", function () {
   var thisId = $(this).attr("data-id");
@@ -111,4 +101,26 @@ $(document).on("click", "#scrap-articles", function () {
   }).then(function () {
     location.reload();
   })
-})
+});
+
+// See saved articles when button is clicked
+$(document).on("click", "#home-page", function () {
+  $.ajax({
+    method: "GET",
+    url: "/"
+  }).then(function () {
+    location.reload();
+    location.href = "/"
+  })
+});
+
+// See saved articles when button is clicked
+$(document).on("click", "#saved-articles", function () {
+  $.ajax({
+    method: "GET",
+    url: "/savedarticles"
+  }).then(function () {
+    location.reload();
+    location.href = "/savedarticles"
+  })
+});
