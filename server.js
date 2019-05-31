@@ -85,11 +85,6 @@ app.get("/articles", function (req, res) {
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function (req, res) {
-  // TODO
-  // ====
-  // Finish the route so it finds one article using the req.params.id,
-  // and run the populate method with "note",
-  // then responds with the article with the note included
   var myArticleId = req.params.id;
   db.Article.findOne({_id: myArticleId})
     // Specify that we want to populate the retrieved libraries with any associated books
@@ -106,19 +101,32 @@ app.get("/articles/:id", function (req, res) {
 
 });
 
+app.put("/articles/:id", function(req, res) {
+  db.Article.updateOne( { _id: req.params.id }, { $set: { isSaved: true }}, function(err, res) {
+    if (err) {
+      console.log("Error updating document " + req.params.id);
+    } else {
+      console.log("Document " + req.params.id + " saved flag updated!");
+    }
+  })
+});
+
+app.delete("/articles/:id", function(req, res) {
+  db.Article.deleteOne( { _id: req.params.id }, function(err) {
+    if (err) {
+      console.log("Error deleting document " + req.params.id);
+      throw err;
+    } else {
+      console.log("Document " + req.params.id + " deleted!");
+      res.send("Document " + req.params.id + " deleted!");
+    }
+  })
+});
+
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function (req, res) {
-  // TODO
-  // ====
-  // save the new note that gets posted to the Notes collection
-  // then find an article from the req.params.id
-  // and update it's "note" property with the _id of the new note
   db.Note.create(req.body)
     .then(function (dbNote) {
-      // If a Note was created successfully, find one User (there's only one) and push the new Note's _id to the User's `notes` array
-      // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      // return db.Article.findOneAndUpdate({ _id: req.params.id }, {note: dbNote._id }, { new: true });
       return db.Article.findOneAndUpdate({ _id: req.params.id }, {$push: {note: dbNote._id }}, { new: true });
     })
     .then(function (dbArticle) {
