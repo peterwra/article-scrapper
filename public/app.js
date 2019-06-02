@@ -5,9 +5,9 @@ $(document).on("click", ".save-article", function () {
   $.ajax({
     method: "PUT",
     url: "/articles/" + thisId + "/true"
-  }).then(function (data) {
-    location.href = "/";
-  });
+  })
+
+  location.reload();
 });
 
 // Remove from saved articles when the user clicks the button
@@ -17,9 +17,9 @@ $(document).on("click", ".unsave-article", function () {
   $.ajax({
     method: "PUT",
     url: "/articles/" + thisId + "/false"
-  }).then(function (data, err) {
-    location.href = "/savedarticles";
-  });
+  })
+
+  location.reload();
 });
 
 
