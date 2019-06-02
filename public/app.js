@@ -4,23 +4,21 @@ $(document).on("click", ".save-article", function () {
 
   $.ajax({
     method: "PUT",
-    url: "/articles/" + thisId
+    url: "/articles/" + thisId + "/true"
   }).then(function (data) {
-    console.log(data);
-    location.reload();
+    location.href = "/";
   });
 });
 
-// Delete article when the user clicks the button
-$(document).on("click", ".delete-article", function () {
+// Remove from saved articles when the user clicks the button
+$(document).on("click", ".unsave-article", function () {
   var thisId = $(this).attr("data-id");
 
   $.ajax({
-    method: "DELETE",
-    url: "/articles/" + thisId
-  }).then(function (data) {
-    console.log(data);
-    location.reload();
+    method: "PUT",
+    url: "/articles/" + thisId + "/false"
+  }).then(function (data, err) {
+    location.href = "/savedarticles";
   });
 });
 

@@ -39,8 +39,8 @@ app.get("/scrape", function (req, res) {
                 });
         });
 
-        // Send a message to the client
-        res.send("Scrape Complete");
+        // Show the articles
+        res.redirect("/");
     });
 });
 
@@ -96,16 +96,18 @@ app.get("/articles/:id", function (req, res) {
 
 });
 
-app.put("/articles/:id", function (req, res) {
-    db.Article.updateOne({ _id: req.params.id }, { $set: { isSaved: true } }, function (err, res) {
+app.put("/articles/:id/:sflag", function (req, res) {
+    var savedState = (req.params.sflag === "true")
+    db.Article.updateOne({ _id: req.params.id }, { $set: { isSaved: savedState } }, function (err, res) {
         if (err) {
             console.log("Error updating document " + req.params.id);
         } else {
             console.log("Document " + req.params.id + " saved flag updated!");
         }
-    })
+    });
 });
 
+/*
 app.delete("/articles/:id", function (req, res) {
     db.Article.deleteOne({ _id: req.params.id }, function (err) {
         if (err) {
@@ -117,6 +119,7 @@ app.delete("/articles/:id", function (req, res) {
         }
     })
 });
+*/
 
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function (req, res) {

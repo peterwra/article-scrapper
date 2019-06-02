@@ -4,7 +4,7 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 
 var PORT = process.env.PORT || 3000;
-var MONGODB = process.env.MONGODB || "mongodb://localhost/articleScraper";
+var MONGODB = process.env.MONGODB_URI || "mongodb://localhost/articleScraper";
 
 // Initialize Express
 var app = express();
