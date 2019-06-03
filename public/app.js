@@ -1,3 +1,73 @@
+// Function to populate our notes
+function populateNotes(articleId) {
+  $("#notes").empty();
+  // Now make an ajax call for the Article
+  $.ajax({
+    method: "GET",
+    url: "/articles/" + articleId
+  })
+    // With that done, add the note information to the page
+    .then(function (data) {
+      console.log(data);
+      // The title of the article
+      $("#notes").append("<h2>" + data.title + "</h2>");
+      // An input to enter a new title
+      $("#notes").append("<input id='titleinput' name='title' >");
+      // A textarea to add a new note body
+      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+      // A button to submit a new note, with the id of the article saved to it
+      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+
+      // If there's a note in the article
+      if (data.note) {
+        for (var i = 0; i < data.note.length; i++) {
+
+          var noteCard = $("<div>");
+          noteCard.attr("class", "card");
+
+          var noteCardBody = $("<div>");
+          noteCardBody.attr("class", "card-body");
+
+          var noteTitle = $("<h3>");
+          noteTitle.attr("class", "card-title");
+          noteTitle.text(data.note[i].title);
+
+          var noteBody = $("<p>");
+          noteBody.attr("class", "card-text");
+          noteBody.text(data.note[i].body);
+
+          var btnGroup = $("<div>");
+          btnGroup.attr("class", "btn-group").attr("role", "group");
+
+          var noteDeleteButton = $("<button class='btn btn-danger delete-note' article-id='"+articleId+"' data-id='"+data.note[i]._id+"'>");
+          noteDeleteButton.text("Delete Note");
+
+          btnGroup.append(noteDeleteButton);
+          noteCardBody.append(noteTitle).append(noteBody).append(btnGroup);
+          noteCard.append(noteCardBody);
+
+          $("#notes").append("<hr>").append(noteCard);
+        }
+      }
+    });
+}
+
+// Delete note
+$(document).on("click", ".delete-note", function () {
+  var noteId = $(this).attr("data-id");
+  var articleId = $(this).attr("article-id");
+
+  console.log("my ids", noteId, articleId);
+
+  $.ajax({
+    method: "DELETE",
+    url: "/notes/" + noteId + "/" + articleId
+  });
+
+  populateNotes(articleId);
+});
+
+
 // Save our article when the user clicks the button
 $(document).on("click", ".save-article", function () {
   var thisId = $(this).attr("data-id");
@@ -29,37 +99,7 @@ $(document).on("click", ".notes", function () {
   $("#notes").empty();
   // Save the id from the p tag
   var thisId = $(this).attr("data-id");
-
-  // Now make an ajax call for the Article
-  $.ajax({
-    method: "GET",
-    url: "/articles/" + thisId
-  })
-    // With that done, add the note information to the page
-    .then(function (data) {
-      console.log(data);
-      // The title of the article
-      $("#notes").append("<h2>" + data.title + "</h2>");
-      // An input to enter a new title
-      $("#notes").append("<input id='titleinput' name='title' >");
-      // A textarea to add a new note body
-      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-      // A button to submit a new note, with the id of the article saved to it
-      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-
-      // If there's a note in the article
-      if (data.note) {
-        for (var i = 0; i < data.note.length; i++) {
-          $("#notes").append("<br><br>");
-          $("#notes").append("<h3>" + data.note[i].title + "</h3>");
-          $("#notes").append("<h4>" + data.note[i].body + "</h4>");
-        }
-        // Place the title of the note in the title input
-        $("#titleinput").val(data.note.title);
-        // Place the body of the note in the body textarea
-        $("#bodyinput").val(data.note.body);
-      }
-    });
+  populateNotes(thisId);
 });
 
 // When you click the savenote button
@@ -80,15 +120,16 @@ $(document).on("click", "#savenote", function () {
   })
     // With that done
     .then(function (data) {
+      populateNotes(thisId);
       // Log the response
-      console.log(data);
+      // console.log(data);
       // Empty the notes section
-      $("#notes").empty();
+      // $("#notes").empty();
     });
 
   // Also, remove the values entered in the input and textarea for note entry
-  $("#titleinput").val("");
-  $("#bodyinput").val("");
+  // $("#titleinput").val("");
+  // $("#bodyinput").val("");
 });
 
 // Get articles when the scrape button is clicked

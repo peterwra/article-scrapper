@@ -48,7 +48,7 @@ app.get("/scrape", function (req, res) {
 app.get("/", function (req, res) {
     // TODO: Finish the route so it grabs all of the articles
     // Find all Notes
-    db.Article.find({})
+    db.Article.find({isSaved: false})
         .then(function (dbArticle) {
             // If all Notes are successfully found, send them back to the client
             // res.json(dbArticle);
@@ -65,7 +65,7 @@ app.get("/", function (req, res) {
 app.get("/savedarticles", function (req, res) {
     // TODO: Finish the route so it grabs all of the articles
     // Find all Notes
-    db.Article.find({})
+    db.Article.find({isSaved: true})
         .then(function (dbArticle) {
             // If all Notes are successfully found, send them back to the client
             // res.json(dbArticle);
@@ -107,20 +107,6 @@ app.put("/articles/:id/:sflag", function (req, res) {
     });
 });
 
-/*
-app.delete("/articles/:id", function (req, res) {
-    db.Article.deleteOne({ _id: req.params.id }, function (err) {
-        if (err) {
-            console.log("Error deleting document " + req.params.id);
-            throw err;
-        } else {
-            console.log("Document " + req.params.id + " deleted!");
-            res.send("Document " + req.params.id + " deleted!");
-        }
-    })
-});
-*/
-
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function (req, res) {
     db.Note.create(req.body)
@@ -135,6 +121,27 @@ app.post("/articles/:id", function (req, res) {
             // If an error occurs, send it back to the client
             res.json(err);
         });
+});
+
+// Delete note and remove from the article array
+app.delete("/notes/:noteid/:articleid", function(req, res) {
+    console.log("-------------------------")
+    console.log(req.params.noteid, req.params.articleid);
+    db.Note.deleteOne({ _id: req.params.noteid }, function(err, obj) {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        console.log(obj);
+        console.log("1 deleted");
+    });
+    db.Article.update({ _id: req.params.articleid }, { $pull: { note: req.params.noteid }}, {multi: false}, function(err, raw) {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        console.log(raw);
+    });
 });
 
 // Export router for the server to use
