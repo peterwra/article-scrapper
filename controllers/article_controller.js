@@ -5,7 +5,7 @@ var cheerio = require("cheerio");
 // The router to handle the requests
 var app = express.Router();
 
-var db = require("../models");
+var db = require("../../models");
 
 // A GET route for scraping the echoJS website
 app.get("/scrape", function (req, res) {
