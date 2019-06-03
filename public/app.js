@@ -8,7 +8,6 @@ function populateNotes(articleId) {
   })
     // With that done, add the note information to the page
     .then(function (data) {
-      console.log(data);
       // The title of the article
       $("#notes").append("<h2>" + data.title + "</h2>");
       // An input to enter a new title
@@ -57,8 +56,6 @@ $(document).on("click", ".delete-note", function () {
   var noteId = $(this).attr("data-id");
   var articleId = $(this).attr("article-id");
 
-  console.log("my ids", noteId, articleId);
-
   $.ajax({
     method: "DELETE",
     url: "/notes/" + noteId + "/" + articleId
@@ -93,7 +90,7 @@ $(document).on("click", ".unsave-article", function () {
 });
 
 
-// Whenever someone clicks a p tag
+// Whenever someone clicks a 'notes' button class
 $(document).on("click", ".notes", function () {
   // Empty the notes from the note section
   $("#notes").empty();
@@ -121,15 +118,8 @@ $(document).on("click", "#savenote", function () {
     // With that done
     .then(function (data) {
       populateNotes(thisId);
-      // Log the response
-      // console.log(data);
-      // Empty the notes section
-      // $("#notes").empty();
     });
 
-  // Also, remove the values entered in the input and textarea for note entry
-  // $("#titleinput").val("");
-  // $("#bodyinput").val("");
 });
 
 // Get articles when the scrape button is clicked

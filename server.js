@@ -3,8 +3,9 @@ var expresshbs = require("express-handlebars");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 
+// Set up port and mongodb connection
 var PORT = process.env.PORT || 3000;
-var MONGODB = process.env.MONGODB_URI || "mongodb://localhost/articleScraper";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/articleScraper";
 
 // Initialize Express
 var app = express();
@@ -19,12 +20,12 @@ app.use(express.static("public"));
 app.engine("handlebars", expresshbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-// Routes
+// Routes/Controllers
 var routes = require("./controllers/article_controller.js");
 app.use(routes);
 
 // Connect to the Mongo DB
-mongoose.connect(MONGODB, { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useFindAndModify: false });
 
 // Start the server
 app.listen(PORT, function () {

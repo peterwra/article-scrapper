@@ -46,13 +46,10 @@ app.get("/scrape", function (req, res) {
 
 // Route for getting all Articles from the db for home
 app.get("/", function (req, res) {
-    // TODO: Finish the route so it grabs all of the articles
     // Find all Notes
     db.Article.find({isSaved: false})
         .then(function (dbArticle) {
             // If all Notes are successfully found, send them back to the client
-            // res.json(dbArticle);
-            // console.log(dbArticle);
             res.render("home", { articles: dbArticle });
         })
         .catch(function (err) {
@@ -63,13 +60,10 @@ app.get("/", function (req, res) {
 
 // Route for getting all Articles from the db for saved
 app.get("/savedarticles", function (req, res) {
-    // TODO: Finish the route so it grabs all of the articles
     // Find all Notes
     db.Article.find({isSaved: true})
         .then(function (dbArticle) {
             // If all Notes are successfully found, send them back to the client
-            // res.json(dbArticle);
-            // console.log(dbArticle);
             res.render("saved", { articles: dbArticle });
         })
         .catch(function (err) {
@@ -125,8 +119,6 @@ app.post("/articles/:id", function (req, res) {
 
 // Delete note and remove from the article array
 app.delete("/notes/:noteid/:articleid", function(req, res) {
-    console.log("-------------------------")
-    console.log(req.params.noteid, req.params.articleid);
     db.Note.deleteOne({ _id: req.params.noteid }, function(err, obj) {
         if (err) {
             console.log(err);
